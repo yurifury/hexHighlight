@@ -1,5 +1,5 @@
 "gvim plugin for highlighting hex codes to help with tweaking colors
-"Last Change: 2010 Jan 21
+"Last Change: 2010 Jan 30
 "Maintainer: Yuri Feldman <feldman.yuri1@gmail.com>
 "License: WTFPL - Do What The Fuck You Want To Public License.
 "Email me if you'd like.
