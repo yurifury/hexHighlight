@@ -15,14 +15,36 @@ function! HexHighlight()
             while lineNumber <= line("$")
                 let currentLine = getline(lineNumber)
                 let hexLineMatch = 1
+
                 while match(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch) != -1
                     let hexMatch = matchstr(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch)
-                    exe 'hi hexColor'.hexGroup.' guifg='.hexMatch.' guibg='.hexMatch
+
+                    if strlen(hexMatch) == 4
+                      let rPart = strpart(hexMatch, 1, 1)
+                      let gPart = strpart(hexMatch, 2, 1)
+                      let bPart = strpart(hexMatch, 3, 1)
+                      let rPart = str2nr(rPart.rPart, 16)
+                      let gPart = str2nr(gPart.gPart, 16)
+                      let bPart = str2nr(bPart.bPart, 16)
+                    else
+                      let rPart = str2nr(strpart(hexMatch, 1, 2), 16)
+                      let gPart = str2nr(strpart(hexMatch, 3, 2), 16)
+                      let bPart = str2nr(strpart(hexMatch, 5, 2), 16)
+                    end
+
+                    if rPart > 127 || gPart > 127 || bPart > 127
+                      let hexComplement = "#000"
+                    else
+                      let hexComplement = "#FFF"
+                    end
+
+                    exe 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexMatch
                     exe 'let m = matchadd("hexColor'.hexGroup.'", "'.hexMatch.'", 25, '.hexGroup.')'
                     let s:HexColors += ['hexColor'.hexGroup]
                     let hexGroup += 1
                     let hexLineMatch += 1
                 endwhile
+
                 let lineNumber += 1
             endwhile
             unlet lineNumber hexGroup
