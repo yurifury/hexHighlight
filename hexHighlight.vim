@@ -26,18 +26,14 @@ function! s:HexHighlight()
                 while match(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch) != -1
                     let hexMatch = matchstr(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch)
 
-                    if strlen(hexMatch) == 4
-                        let rPart = strpart(hexMatch, 1, 1)
-                        let gPart = strpart(hexMatch, 2, 1)
-                        let bPart = strpart(hexMatch, 3, 1)
-                        let rPart = str2nr(rPart.rPart, 16)
-                        let gPart = str2nr(gPart.gPart, 16)
-                        let bPart = str2nr(bPart.bPart, 16)
-                    else
-                        let rPart = str2nr(strpart(hexMatch, 1, 2), 16)
-                        let gPart = str2nr(strpart(hexMatch, 3, 2), 16)
-                        let bPart = str2nr(strpart(hexMatch, 5, 2), 16)
-                    end
+                    let hexColor=hexMatch
+                    if (strlen(hexMatch) == 4)
+                        let hexColor = '#' . substitute(strpart(hexMatch, 1), '.', '&&', 'g')
+                    endif
+
+                    let rPart = str2nr(strpart(hexColor, 1, 2), 16)
+                    let gPart = str2nr(strpart(hexColor, 3, 2), 16)
+                    let bPart = str2nr(strpart(hexColor, 5, 2), 16)
 
                     if rPart > 127 || gPart > 127 || bPart > 127
                         let hexComplement = "#000000"
@@ -45,8 +41,8 @@ function! s:HexHighlight()
                         let hexComplement = "#FFFFFF"
                     end
 
-                    exe 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexMatch
-                    exe 'let m = matchadd("hexColor'.hexGroup.'", "'.hexMatch.'", 25, '.hexGroup.')'
+                    exe 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexColor
+                    exe 'let m = matchadd("hexColor'.hexGroup.'", "'.hexColor.'", 25, '.hexGroup.')'
                     let s:HexColors += ['hexColor'.hexGroup]
                     let hexGroup += 1
                     let hexLineMatch += 1
