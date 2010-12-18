@@ -34,6 +34,7 @@ command! -nargs=? HHC         call s:HighlightHexCodes()
 function! s:HighlightHexCodes()
      
     let lineNumber = 0
+    let matchno = 4
     while lineNumber <= line("$")
         let currentLine = getline(lineNumber)
 
@@ -43,25 +44,37 @@ function! s:HighlightHexCodes()
                 let hiNameMatch = matchstr(currentLine, '\v\w+', hiNameIndex)
             endif
 
-            let guibgIndex = matchend(currentLine, 'guibg=#')
+            let guibgIndex = matchend(currentLine, 'guibg=')
             if guibgIndex != -1
                 let guibgMatch = matchstr(currentLine, '\v\S+', guibgIndex)
+            else
+                let guibgMatch = 'NONE'
             endif
 
-            let guifgIndex = matchend(currentLine, 'guifg=#')
+            let guifgIndex = matchend(currentLine, 'guifg=')
             if guifgIndex != -1
                 let guifgMatch = matchstr(currentLine, '\v\S+', guifgIndex)
+            else
+                let guifgMatch = 'NONE'
             endif
 
-            "if guifgMatch == ''
-                "let guifgMatch = none
-            "endif
-            "if guibgMatch == ''
-                "let guibgMatch = none
-            "endif
-            "echo 'hi '.lineNumber.' guibg=#'.guibgMatch.' guifg=#'.guifgMatch
+            let guiIndex = matchend(currentLine, 'gui=')
+            if guiIndex != -1
+                let guiMatch = matchstr(currentLine, '\v\S+', guiIndex)
+            else
+                let guiMatch = 'none'
+            endif
 
-            "matchadd(lineNumber, hiNameMatch)
+            "highlight lineNumber guibg= guibgMatch guifg= guifgMatch
+            if guifgMatch != 'NONE' || guibgMatch != 'NONE'
+                exe 'hi '.matchno.' guibg='.guibgMatch.' guifg='.guifgMatch.' gui='.guiMatch
+                "exe 'hi fff'.lineNumber.' guibg='.guibgMatch.' guifg='.guifgMatch
+                exe 'let m = matchadd('.matchno.', "'.hiNameMatch.'")'
+                "exe "matchadd('fff".lineNumber."', '".hiNameMatch."')"
+                "hi hexColor4 guifg=#000000 guibg=#000000
+                "let m = matchadd("hexColor4", "#000000", 25, 4)
+                let matchno += 1
+            endif
         endif
         let lineNumber += 1
     endwhile
