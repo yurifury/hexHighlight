@@ -29,6 +29,50 @@ function! s:RefreshColorScheme()
     exe 'colorscheme ' . g:colors_name
 endfunction
 command! -nargs=? HCT         call s:HighlightCTerms()
+command! -nargs=? HHC         call s:HighlightHexCodes()
+
+function! s:HighlightHexCodes()
+     
+    let lineNumber = 0
+    while lineNumber <= line("$")
+        let currentLine = getline(lineNumber)
+
+        if match(currentLine, '\v^\s*hi(light)?') != -1
+            let hiNameIndex = matchend(currentLine, '\v^\s*hi(light)?')
+            if hiNameIndex != -1
+                let hiNameMatch = matchstr(currentLine, '\v\w+', hiNameIndex)
+            endif
+
+            let guibgIndex = matchend(currentLine, 'guibg=#')
+            if guibgIndex != -1
+                let guibgMatch = matchstr(currentLine, '\v\S+', guibgIndex)
+            endif
+
+            let guifgIndex = matchend(currentLine, 'guifg=#')
+            if guifgIndex != -1
+                let guifgMatch = matchstr(currentLine, '\v\S+', guifgIndex)
+            endif
+
+            "if guifgMatch == ''
+                "let guifgMatch = none
+            "endif
+            "if guibgMatch == ''
+                "let guibgMatch = none
+            "endif
+            "echo 'hi '.lineNumber.' guibg=#'.guibgMatch.' guifg=#'.guifgMatch
+
+            "matchadd(lineNumber, hiNameMatch)
+        endif
+        let lineNumber += 1
+    endwhile
+    "for cterm in cterms
+        "exe 'hi hurp'.cterm.' ctermbg='.cterm.' ctermfg='.cterm
+        "exe "let m = matchadd('hurp".cterm."', 'ctermbg=".cterm."')"
+        ""echo 'hi hurp'.cterm.' ctermbg='.cterm.' ctermfg='.cterm
+        ""echo "let m = matchadd('hurp".cterm."', 'ctermbg=".cterm."')"
+    "endfor
+endfunction
+
 function! s:HighlightCTerms()
      
     let cterms = range(6,255)
@@ -45,9 +89,15 @@ function! s:HighlightCTerms()
             let ctermbgMatch = matchstr(currentLine, '\v\d+', ctermbgIndex)
             let ctermfgIndex = matchend(currentLine, 'ctermfg=')
             let ctermfgMatch = matchstr(currentLine, '\v\d+', ctermfgIndex)
-            hi lineNumber ctermbg=ctermbgMatch ctermfg=ctermfgMatch
+            if ctermfgMatch == ''
+                let ctermfgMatch = none
+            endif
+            if ctermbgMatch == ''
+                let ctermbgMatch = none
+            endif
+            exe 'hi '.lineNumber.'ctermbg='.ctermbgMatch.' ctermfg='.ctermfgMatch
 
-            exe 'matchadd
+            exe matchadd(lineNumber, hiNameMatch)
         endif
         let lineNumber += 1
     endwhile
