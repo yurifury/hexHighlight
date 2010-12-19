@@ -65,25 +65,14 @@ function! s:HighlightHexCodes()
                 let guiMatch = 'none'
             endif
 
-            "highlight lineNumber guibg= guibgMatch guifg= guifgMatch
-            if guifgMatch != 'NONE' || guibgMatch != 'NONE'
-                exe 'hi '.matchno.' guibg='.guibgMatch.' guifg='.guifgMatch.' gui='.guiMatch
-                "exe 'hi fff'.lineNumber.' guibg='.guibgMatch.' guifg='.guifgMatch
-                exe 'let m = matchadd('.matchno.', "'.hiNameMatch.'")'
-                "exe "matchadd('fff".lineNumber."', '".hiNameMatch."')"
-                "hi hexColor4 guifg=#000000 guibg=#000000
-                "let m = matchadd("hexColor4", "#000000", 25, 4)
+            if guifgMatch != 'NONE' || guibgMatch != 'NONE' || guiMatch != 'none'
+                exec 'hi '.matchno.' guibg='.guibgMatch.' guifg='.guifgMatch.' gui='.guiMatch
+                let m = matchadd(matchno, hiNameMatch)
                 let matchno += 1
             endif
         endif
         let lineNumber += 1
     endwhile
-    "for cterm in cterms
-        "exe 'hi hurp'.cterm.' ctermbg='.cterm.' ctermfg='.cterm
-        "exe "let m = matchadd('hurp".cterm."', 'ctermbg=".cterm."')"
-        ""echo 'hi hurp'.cterm.' ctermbg='.cterm.' ctermfg='.cterm
-        ""echo "let m = matchadd('hurp".cterm."', 'ctermbg=".cterm."')"
-    "endfor
 endfunction
 
 function! s:HighlightCTerms()
