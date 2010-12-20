@@ -30,6 +30,7 @@ function! s:RefreshColorScheme()
 endfunction
 command! -nargs=? HCT         call s:HighlightCTerms()
 command! -nargs=? HHC         call s:HighlightHexCodes()
+command! -nargs=? RCS         call s:RefreshColorScheme()
 
 function! s:HighlightHexCodes()
      
@@ -65,8 +66,15 @@ function! s:HighlightHexCodes()
                 let guiMatch = 'none'
             endif
 
-            if guifgMatch != 'NONE' || guibgMatch != 'NONE' || guiMatch != 'none'
-                exec 'hi '.matchno.' guibg='.guibgMatch.' guifg='.guifgMatch.' gui='.guiMatch
+            let guispIndex = matchend(currentLine, 'guisp=')
+            if guispIndex != -1
+                let guispMatch = matchstr(currentLine, '\v\S+', guispIndex)
+            else
+                let guispMatch = 'NONE'
+            endif
+
+            if guifgMatch != 'NONE' || guibgMatch != 'NONE' || guiMatch != 'none' || guispMatch != 'NONE'
+                exec 'hi '.matchno.' guibg='.guibgMatch.' guifg='.guifgMatch.' gui='.guiMatch.' guisp='.guispMatch
                 let m = matchadd(matchno, hiNameMatch)
                 let matchno += 1
             endif
@@ -77,38 +85,46 @@ endfunction
 
 function! s:HighlightCTerms()
      
-    let cterms = range(6,255)
-
     let lineNumber = 0
+    let matchno = 4
     while lineNumber <= line("$")
         let currentLine = getline(lineNumber)
 
         if match(currentLine, '\v^\s*hi(light)?') != -1
             let hiNameIndex = matchend(currentLine, '\v^\s*hi(light)?')
-            let hiNameMatch = matchstr(currentLine, '\v\w+', hiNameIndex)
-            echo hiNameMatch
-            let ctermbgIndex = matchend(currentLine, 'ctermbg=')
-            let ctermbgMatch = matchstr(currentLine, '\v\d+', ctermbgIndex)
-            let ctermfgIndex = matchend(currentLine, 'ctermfg=')
-            let ctermfgMatch = matchstr(currentLine, '\v\d+', ctermfgIndex)
-            if ctermfgMatch == ''
-                let ctermfgMatch = none
+            if hiNameIndex != -1
+                let hiNameMatch = matchstr(currentLine, '\v\w+', hiNameIndex)
             endif
-            if ctermbgMatch == ''
-                let ctermbgMatch = none
-            endif
-            exe 'hi '.lineNumber.'ctermbg='.ctermbgMatch.' ctermfg='.ctermfgMatch
 
-            exe matchadd(lineNumber, hiNameMatch)
+            let ctermbgIndex = matchend(currentLine, 'ctermbg=')
+            if ctermbgIndex != -1 
+                let ctermbgMatch = matchstr(currentLine, '\v\S+', ctermbgIndex)
+            else
+                let ctermbgMatch = 'none'
+            endif
+
+            let ctermfgIndex = matchend(currentLine, 'ctermfg=')
+            if ctermfgIndex != -1
+                let ctermfgMatch = matchstr(currentLine, '\v\S+', ctermfgIndex)
+            else
+                let ctermfgMatch = 'none'
+            endif
+
+            let ctermIndex = matchend(currentLine, 'cterm=')
+            if ctermIndex != -1
+                let ctermMatch = matchstr(currentLine, '\v\S+', ctermIndex)
+            else
+                let ctermMatch = 'none'
+            endif
+
+            if ctermfgMatch != 'none' || ctermbgMatch != 'none' || ctermMatch != 'none'
+                exec 'hi '.matchno.' ctermbg='.ctermbgMatch.' ctermfg='.ctermfgMatch.' cterm='.ctermMatch
+                let m = matchadd(matchno, hiNameMatch)
+                let matchno += 1
+            endif
         endif
         let lineNumber += 1
     endwhile
-    "for cterm in cterms
-        "exe 'hi hurp'.cterm.' ctermbg='.cterm.' ctermfg='.cterm
-        "exe "let m = matchadd('hurp".cterm."', 'ctermbg=".cterm."')"
-        ""echo 'hi hurp'.cterm.' ctermbg='.cterm.' ctermfg='.cterm
-        ""echo "let m = matchadd('hurp".cterm."', 'ctermbg=".cterm."')"
-    "endfor
 endfunction
 
 function! s:HexHighlightRefresh()
