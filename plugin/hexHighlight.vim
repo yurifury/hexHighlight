@@ -33,7 +33,6 @@ command! -nargs=? HHC         call s:HighlightHexCodes()
 command! -nargs=? RCS         call s:RefreshColorScheme()
 
 function! s:HighlightHexCodes()
-     
     let lineNumber = 0
     let matchno = 4
     while lineNumber <= line("$")
@@ -84,6 +83,7 @@ function! s:HighlightHexCodes()
 endfunction
 
 function! s:HighlightCTerms()
+    let s = clearmatches()
      
     let lineNumber = 0
     let matchno = 4
