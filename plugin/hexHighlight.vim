@@ -21,7 +21,7 @@ endif
 
 nnoremap <Plug>RefreshColorScheme :<C-u>call <SID>RefreshColorScheme()<CR>
 if ! hasmapto('<Plug>RefreshColorScheme', 'n')
-    nmap <Leader>p <Plug>RefreshColorScheme
+    " nmap <Leader>p <Plug>RefreshColorScheme
 endif
 
 function! s:RefreshColorScheme()
