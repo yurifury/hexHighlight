@@ -9,9 +9,10 @@
 " ============================================================================
 
 " Section: Script init {{{1
-"if exists('loaded_hexHighlight')
-    "finish
-"endif
+" Section: Boilerplate {{{2
+if exists('loaded_hexHighlight')
+    finish
+endif
 
 if v:version < 700
     echoerr "hexHighlight requires vim >= 7. Download it!"
@@ -19,6 +20,7 @@ if v:version < 700
 endif
 let loaded_hexHighlight = 1
 
+" Section: Variables {{{2
 let g:HexVisibleText = 1
 let s:HexColored = 0
 let s:ColorsDict = {}
@@ -60,19 +62,18 @@ function! s:PopulateColorsDict()
 
         while match(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch) != -1
             let hexColor = matchstr(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch)
-
             let hexNum = strpart(hexColor, 1)
 
-            if (strlen(hexColor) == 4)
-                let shortHexNum = strpart(hexColor, 1)
-                let longHexNum = substitute(shortHexNum, '.', '&&', 'g')
-                let hexColor = '#' . longHexNum
-                let hexComplement = '#' . s:CalcVisibleForeground(longHexNum)
-            else
-                let hexComplement = '#' . s:CalcVisibleForeground(hexNum)
-            endif
-
             if !has_key(s:ColorsDict, hexNum)
+                if (strlen(hexColor) == 4)
+                    let shortHexNum = strpart(hexColor, 1)
+                    let longHexNum = substitute(shortHexNum, '.', '&&', 'g')
+                    let hexColor = '#' . longHexNum
+                    let hexComplement = '#' . s:CalcVisibleForeground(longHexNum)
+                else
+                    let hexComplement = '#' . s:CalcVisibleForeground(hexNum)
+                endif
+
                 let s:ColorsDict[hexNum] = {'hexColor': hexColor, 'hexComplement': hexComplement}
             endif
 
