@@ -23,132 +23,132 @@ let g:HexVisibleText = 1
 let s:HexColored = 0
 let s:ColorsDict = {}
 
-nnoremap <Plug>HexHighlightToggle :<C-u>call <SID>HexHighlightToggle()<CR>
-if ! hasmapto('<Plug>HexHighlightToggle', 'n')
-    nmap <Leader><F2> <Plug>HexHighlightToggle
-endif
+"nnoremap <Plug>HexHighlightToggle :<C-u>call <SID>HexHighlightToggle()<CR>
+"if ! hasmapto('<Plug>HexHighlightToggle', 'n')
+    "nmap <Leader><F2> <Plug>HexHighlightToggle
+"endif
 
-function! s:RefreshColorScheme()
-    exe 'w'
-    exe 'colorscheme ' . g:colors_name
-endfunction
+"function! s:RefreshColorScheme()
+    "exe 'w'
+    "exe 'colorscheme ' . g:colors_name
+"endfunction
 
-command! -nargs=? HHT         call s:HexHighlightToggle()
+"command! -nargs=? HHT         call s:HexHighlightToggle()
 
-function! s:HighlightHexCodes()
-    let lineNumber = 0
-    let matchno = 4
-    while lineNumber <= line("$")
-        let currentLine = getline(lineNumber)
+"function! s:HighlightHexCodes()
+    "let lineNumber = 0
+    "let matchno = 4
+    "while lineNumber <= line("$")
+        "let currentLine = getline(lineNumber)
 
-        if match(currentLine, '\v^\s*hi(light)?') != -1
-            let hiNameIndex = matchend(currentLine, '\v^\s*hi(light)?')
-            if hiNameIndex != -1
-                let hiNameMatch = matchstr(currentLine, '\v\w+', hiNameIndex)
-            endif
+        "if match(currentLine, '\v^\s*hi(light)?') != -1
+            "let hiNameIndex = matchend(currentLine, '\v^\s*hi(light)?')
+            "if hiNameIndex != -1
+                "let hiNameMatch = matchstr(currentLine, '\v\w+', hiNameIndex)
+            "endif
 
-            let guibgIndex = matchend(currentLine, 'guibg=')
-            if guibgIndex != -1
-                let guibgMatch = matchstr(currentLine, '\v\S+', guibgIndex)
-            else
-                let guibgMatch = 'NONE'
-            endif
+            "let guibgIndex = matchend(currentLine, 'guibg=')
+            "if guibgIndex != -1
+                "let guibgMatch = matchstr(currentLine, '\v\S+', guibgIndex)
+            "else
+                "let guibgMatch = 'NONE'
+            "endif
 
-            let guifgIndex = matchend(currentLine, 'guifg=')
-            if guifgIndex != -1
-                let guifgMatch = matchstr(currentLine, '\v\S+', guifgIndex)
-            else
-                let guifgMatch = 'NONE'
-            endif
+            "let guifgIndex = matchend(currentLine, 'guifg=')
+            "if guifgIndex != -1
+                "let guifgMatch = matchstr(currentLine, '\v\S+', guifgIndex)
+            "else
+                "let guifgMatch = 'NONE'
+            "endif
 
-            let guiIndex = matchend(currentLine, 'gui=')
-            if guiIndex != -1
-                let guiMatch = matchstr(currentLine, '\v\S+', guiIndex)
-            else
-                let guiMatch = 'none'
-            endif
+            "let guiIndex = matchend(currentLine, 'gui=')
+            "if guiIndex != -1
+                "let guiMatch = matchstr(currentLine, '\v\S+', guiIndex)
+            "else
+                "let guiMatch = 'none'
+            "endif
 
-            let guispIndex = matchend(currentLine, 'guisp=')
-            if guispIndex != -1
-                let guispMatch = matchstr(currentLine, '\v\S+', guispIndex)
-            else
-                let guispMatch = 'NONE'
-            endif
+            "let guispIndex = matchend(currentLine, 'guisp=')
+            "if guispIndex != -1
+                "let guispMatch = matchstr(currentLine, '\v\S+', guispIndex)
+            "else
+                "let guispMatch = 'NONE'
+            "endif
 
-            if guifgMatch != 'NONE' || guibgMatch != 'NONE' || guiMatch != 'none' || guispMatch != 'NONE'
-                exec 'hi '.matchno.' guibg='.guibgMatch.' guifg='.guifgMatch.' gui='.guiMatch.' guisp='.guispMatch
-                let m = matchadd(matchno, hiNameMatch)
-                let matchno += 1
-            endif
-        endif
-        let lineNumber += 1
-    endwhile
-endfunction
+            "if guifgMatch != 'NONE' || guibgMatch != 'NONE' || guiMatch != 'none' || guispMatch != 'NONE'
+                "exec 'hi '.matchno.' guibg='.guibgMatch.' guifg='.guifgMatch.' gui='.guiMatch.' guisp='.guispMatch
+                "let m = matchadd(matchno, hiNameMatch)
+                "let matchno += 1
+            "endif
+        "endif
+        "let lineNumber += 1
+    "endwhile
+"endfunction
 
-function! s:HighlightCTerms()
-    let s = clearmatches()
+"function! s:HighlightCTerms()
+    "let s = clearmatches()
 
-    let lineNumber = 0
-    let matchno = 4
-    while lineNumber <= line("$")
-        let currentLine = getline(lineNumber)
+    "let lineNumber = 0
+    "let matchno = 4
+    "while lineNumber <= line("$")
+        "let currentLine = getline(lineNumber)
 
-        if match(currentLine, '\v^\s*hi(light)?') != -1
-            let hiNameIndex = matchend(currentLine, '\v^\s*hi(light)?')
-            if hiNameIndex != -1
-                let hiNameMatch = matchstr(currentLine, '\v\w+', hiNameIndex)
-            endif
+        "if match(currentLine, '\v^\s*hi(light)?') != -1
+            "let hiNameIndex = matchend(currentLine, '\v^\s*hi(light)?')
+            "if hiNameIndex != -1
+                "let hiNameMatch = matchstr(currentLine, '\v\w+', hiNameIndex)
+            "endif
 
-            let ctermbgIndex = matchend(currentLine, 'ctermbg=')
-            if ctermbgIndex != -1 
-                let ctermbgMatch = matchstr(currentLine, '\v\S+', ctermbgIndex)
-            else
-                let ctermbgMatch = 'none'
-            endif
+            "let ctermbgIndex = matchend(currentLine, 'ctermbg=')
+            "if ctermbgIndex != -1 
+                "let ctermbgMatch = matchstr(currentLine, '\v\S+', ctermbgIndex)
+            "else
+                "let ctermbgMatch = 'none'
+            "endif
 
-            let ctermfgIndex = matchend(currentLine, 'ctermfg=')
-            if ctermfgIndex != -1
-                let ctermfgMatch = matchstr(currentLine, '\v\S+', ctermfgIndex)
-            else
-                let ctermfgMatch = 'none'
-            endif
+            "let ctermfgIndex = matchend(currentLine, 'ctermfg=')
+            "if ctermfgIndex != -1
+                "let ctermfgMatch = matchstr(currentLine, '\v\S+', ctermfgIndex)
+            "else
+                "let ctermfgMatch = 'none'
+            "endif
 
-            let ctermIndex = matchend(currentLine, 'cterm=')
-            if ctermIndex != -1
-                let ctermMatch = matchstr(currentLine, '\v\S+', ctermIndex)
-            else
-                let ctermMatch = 'none'
-            endif
+            "let ctermIndex = matchend(currentLine, 'cterm=')
+            "if ctermIndex != -1
+                "let ctermMatch = matchstr(currentLine, '\v\S+', ctermIndex)
+            "else
+                "let ctermMatch = 'none'
+            "endif
 
-            if ctermfgMatch != 'none' || ctermbgMatch != 'none' || ctermMatch != 'none'
-                exec 'hi '.matchno.' ctermbg='.ctermbgMatch.' ctermfg='.ctermfgMatch.' cterm='.ctermMatch
-                let m = matchadd(matchno, hiNameMatch)
-                let matchno += 1
-            endif
-        endif
-        let lineNumber += 1
-    endwhile
-endfunction
+            "if ctermfgMatch != 'none' || ctermbgMatch != 'none' || ctermMatch != 'none'
+                "exec 'hi '.matchno.' ctermbg='.ctermbgMatch.' ctermfg='.ctermfgMatch.' cterm='.ctermMatch
+                "let m = matchadd(matchno, hiNameMatch)
+                "let matchno += 1
+            "endif
+        "endif
+        "let lineNumber += 1
+    "endwhile
+"endfunction
 
-function! s:HexHighlightRefresh()
-    if ! has("gui_running")
+"function! s:HexHighlightRefresh()
+    "if ! has("gui_running")
+        "echo "hexHighlight only works with a graphical version of vim"
+        "return 0
+    "endif
+    "if s:HexColored == 0
+        "let s:HexColored = s:HexColorize()
+        "echo "Highlighting hex colors"
+    "elseif s:HexColored == 1
+        "call s:HexClear()
+        "let s:HexColored = s:HexColorize()
+        "echo "Refreshing hex colors"
+    "endif
+"endfunction
+
+function s:HexHighlightToggle()
+    if !has("gui_running")
         echo "hexHighlight only works with a graphical version of vim"
-        return 0
-    endif
-    if s:HexColored == 0
-        let s:HexColored = s:HexColorize()
-        echo "Highlighting hex colors"
-    elseif s:HexColored == 1
-        call s:HexClear()
-        let s:HexColored = s:HexColorize()
-        echo "Refreshing hex colors"
-    endif
-endfunction
-
-function! s:HexHighlightToggle()
-    if ! has("gui_running")
-        echo "hexHighlight only works with a graphical version of vim"
-        return 0
+        return
     endif
     if s:HexColored == 0
         let s:HexColored = s:HexColorize()
@@ -159,15 +159,14 @@ function! s:HexHighlightToggle()
     endif
 endfunction
 
-function! s:HexClear()
-    for hexColor in s:HexColors
-        exe 'highlight clear '.hexColor
+function s:HexClear()
+    for hexNum in s:ColorsDict
+        exec 'highlight '.hexNum
     endfor
     call clearmatches()
-    return 0
 endfunction
 
-function! s:HexColorize()
+function s:PopulateColorsDict()
     let lineNumber = 0
     while lineNumber <= line("$")
         let currentLine = getline(lineNumber)
@@ -183,7 +182,8 @@ function! s:HexColorize()
             let hexNum = strpart(hexColor, 1, 6)
 
             if !has_key(s:ColorsDict, hexNum)
-                let s:ColorsDict[hexNum] = {'hexColor': hexColor, 'hexComplement': s:CalcVisibleForeground(hexNum)}
+                let hexComplement = s:CalcVisibleForeground(hexNum)
+                let s:ColorsDict[hexNum] = {'hexColor': hexColor, 'hexComplement': hexComplement}
             endif
 
             let hexLineMatch += 1
@@ -191,8 +191,20 @@ function! s:HexColorize()
 
         let lineNumber += 1
     endwhile
-    unlet lineNumber hexGroup
-    return 1
+endfunction
+
+function s:HighlightDict()
+    for hexNum in s:ColorsDict
+        let hexColor = s:ColorsDict[hexNum][hexColor]
+        let hexComplement = s:ColorsDict[hexNum][hexComplement]
+        let m = matchadd(hexNum, hexColor)
+
+        if g:HexVisibleText
+            exec 'hi ' . hexNum . ' guibg=' . hexColor . ' guifg=' . hexComplement
+        else
+            exec 'hi ' . hexNum . ' guibg=' . hexColor . ' guifg=' . hexColor
+        endif
+    endfor
 endfunction
 
 " Function: s:CalcVisibleForeground(color) {{{2
@@ -210,9 +222,4 @@ function s:CalcVisibleForeground(color)
         return 'FFFFFF'
     end
 endfunction
-
-"exec 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexColor
-"let m = matchadd("hexColor'.hexGroup.'", "'.hexColor.'", 25, '.hexGroup.')'
-"let m = matchadd(matchno, hiNameMatch)
-"let s:HexColors += ['hexColor'.hexGroup]
-"let hexGroup += 1
+" vim: set foldmethod=marker :
