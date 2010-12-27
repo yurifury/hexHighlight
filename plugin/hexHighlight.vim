@@ -56,31 +56,24 @@ function! s:PopulateColorsDict()
     let lineNumber = 0
     while lineNumber <= line("$")
         let currentLine = getline(lineNumber)
-
         let hexLineMatch = 1
-        while match(currentLine, '#\x\{6}', 0, hexLineMatch) != -1
-            let hexColor = matchstr(currentLine, '#\x\{6}', 0, hexLineMatch)
+
+        while match(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch) != -1
+            let hexColor = matchstr(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch)
 
             let hexNum = strpart(hexColor, 1)
-            if !has_key(s:ColorsDict, hexNum)
+
+            if (strlen(hexColor) == 4)
+                let shortHexNum = strpart(hexColor, 1)
+                let longHexNum = substitute(shortHexNum, '.', '&&', 'g')
+                let hexColor = '#' . longHexNum
+                let hexComplement = '#' . s:CalcVisibleForeground(longHexNum)
+            else
                 let hexComplement = '#' . s:CalcVisibleForeground(hexNum)
-                let s:ColorsDict[hexNum] = {'hexColor': hexColor, 'hexComplement': hexComplement}
             endif
 
-            let hexLineMatch += 1
-        endwhile
-
-        let hexLineMatch = 1
-        while match(currentLine, '#\x\{3}', 0, hexLineMatch) != -1
-            let shortHexColor = matchstr(currentLine, '#\x\{3}', 0, hexLineMatch)
-            let shortHexNum = strpart(shortHexColor, 1)
-
-            let hexNum = substitute(shortHexNum, '.', '&&', 'g')
-            let hexColor = '#' . hexNum
-            if !has_key(s:ColorsDict, shortHexNum)
-                let hexComplement = '#' . s:CalcVisibleForeground(hexNum)
-                echo shortHexNum
-                let s:ColorsDict[shortHexNum] = {'hexColor': hexColor, 'hexComplement': hexComplement}
+            if !has_key(s:ColorsDict, hexNum)
+                let s:ColorsDict[hexNum] = {'hexColor': hexColor, 'hexComplement': hexComplement}
             endif
 
             let hexLineMatch += 1
@@ -95,8 +88,6 @@ function! s:HighlightDict()
     for hexNum in keys(s:ColorsDict)
         let hexColor = s:ColorsDict[hexNum]['hexColor']
         let hexComplement = s:ColorsDict[hexNum]['hexComplement']
-        "echo hexNum
-        "echo hexColor
 
         if g:HexVisibleText
             exec 'hi ' . hexNum . ' guibg=' . hexColor . ' guifg=' . hexComplement
@@ -104,7 +95,7 @@ function! s:HighlightDict()
             exec 'hi ' . hexNum . ' guibg=' . hexColor . ' guifg=' . hexColor
         endif
 
-        let m = matchadd(hexNum, hexColor)
+        let m = matchadd(hexNum, '#' . hexNum)
     endfor
 endfunction
 
