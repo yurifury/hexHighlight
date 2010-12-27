@@ -19,6 +19,7 @@ if v:version < 700
 endif
 let loaded_hexHighlight = 1
 
+let g:HexVisibleText = 1
 let s:HexColored = 0
 let s:HexColors = {}
 
@@ -190,18 +191,21 @@ function! s:HexColorize()
                 let hexColor = '#' . substitute(strpart(hexColor, 1), '.', '&&', 'g')
             endif
 
-            if 
-            let rPart = str2nr(strpart(hexColor, 1, 2), 16)
-            let gPart = str2nr(strpart(hexColor, 3, 2), 16)
-            let bPart = str2nr(strpart(hexColor, 5, 2), 16)
+            if g:HexVisibleText
+                let rPart = str2nr(strpart(hexColor, 1, 2), 16)
+                let gPart = str2nr(strpart(hexColor, 3, 2), 16)
+                let bPart = str2nr(strpart(hexColor, 5, 2), 16)
 
-            if rPart > 127 || gPart > 127 || bPart > 127
-                let hexComplement = "#000000"
+                if rPart > 127 || gPart > 127 || bPart > 127
+                    let hexComplement = "#000000"
+                else
+                    let hexComplement = "#FFFFFF"
+                end
             else
-                let hexComplement = "#FFFFFF"
-            end
+                let hexComplement = hexColor
+            endif
 
-            exe 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexColor
+            exec 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexColor
             let m = matchadd("hexColor'.hexGroup.'", "'.hexColor.'", 25, '.hexGroup.')'
                 let m = matchadd(matchno, hiNameMatch)
             let s:HexColors += ['hexColor'.hexGroup]
