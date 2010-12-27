@@ -21,7 +21,7 @@ let loaded_hexHighlight = 1
 
 let g:HexVisibleText = 1
 let s:HexColored = 0
-let s:HexColors = {}
+let s:ColorsDict = {}
 
 nnoremap <Plug>HexHighlightToggle :<C-u>call <SID>HexHighlightToggle()<CR>
 if ! hasmapto('<Plug>HexHighlightToggle', 'n')
@@ -33,7 +33,7 @@ function! s:RefreshColorScheme()
     exe 'colorscheme ' . g:colors_name
 endfunction
 
-command! -nargs=? HCT         call s:HighlightCTerms()
+command! -nargs=? HHT         call s:HexHighlightToggle()
 
 function! s:HighlightHexCodes()
     let lineNumber = 0
@@ -87,7 +87,7 @@ endfunction
 
 function! s:HighlightCTerms()
     let s = clearmatches()
-     
+
     let lineNumber = 0
     let matchno = 4
     while lineNumber <= line("$")
@@ -180,25 +180,12 @@ function! s:HexColorize()
                 let hexColor = '#' . substitute(strpart(hexColor, 1), '.', '&&', 'g')
             endif
 
-            if g:HexVisibleText
-                let rPart = str2nr(strpart(hexColor, 1, 2), 16)
-                let gPart = str2nr(strpart(hexColor, 3, 2), 16)
-                let bPart = str2nr(strpart(hexColor, 5, 2), 16)
+            let hexNum = strpart(hexColor, 1, 6)
 
-                if rPart > 127 || gPart > 127 || bPart > 127
-                    let hexComplement = "#000000"
-                else
-                    let hexComplement = "#FFFFFF"
-                end
-            else
-                let hexComplement = hexColor
+            if !has_key(s:ColorsDict, hexNum)
+                let s:ColorsDict[hexNum] = {'hexColor': hexColor, 'hexComplement': s:CalcVisibleForeground(hexNum)}
             endif
 
-            exec 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexColor
-            let m = matchadd("hexColor'.hexGroup.'", "'.hexColor.'", 25, '.hexGroup.')'
-                let m = matchadd(matchno, hiNameMatch)
-            let s:HexColors += ['hexColor'.hexGroup]
-            let hexGroup += 1
             let hexLineMatch += 1
         endwhile
 
@@ -207,3 +194,25 @@ function! s:HexColorize()
     unlet lineNumber hexGroup
     return 1
 endfunction
+
+" Function: s:CalcVisibleForeground(color) {{{2
+" figures out whether a white or black color is contrasting to color
+" Args:
+"   -color: the color to figure the foreground to
+function s:CalcVisibleForeground(color)
+    let rPart = str2nr(strpart(a:color, 0, 2), 16)
+    let gPart = str2nr(strpart(a:color, 2, 2), 16)
+    let bPart = str2nr(strpart(a:color, 4, 2), 16)
+
+    if rPart > 127 || gPart > 127 || bPart > 127
+        return '000000'
+    else
+        return 'FFFFFF'
+    end
+endfunction
+
+"exec 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexColor
+"let m = matchadd("hexColor'.hexGroup.'", "'.hexColor.'", 25, '.hexGroup.')'
+"let m = matchadd(matchno, hiNameMatch)
+"let s:HexColors += ['hexColor'.hexGroup]
+"let hexGroup += 1
