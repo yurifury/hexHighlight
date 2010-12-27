@@ -1,11 +1,24 @@
-"gvim plugin for highlighting hex codes to help with tweaking colors
-"Last Change: 2010 Dec 21
-"Maintainer: Yuri Feldman <yuri@tbqh.net>
-"License: WTFPL - Do What The Fuck You Want To Public License.
-"Email me if you'd like.
-if exists('g:loaded_hexHighlight') || v:version < 700
+" ============================================================================
+" File:        hexHighlight.vim
+" Description: gvim plugin that provides context highlighting for hex codes
+" Maintainer:  Yuri Feldman <yuri@tbqh.net>
+" Version:     2
+" Last Change: 27th December, 2010
+" License:     WTFPL - Do What The Fuck You Want To Public License.
+"
+" ============================================================================
+
+" Section: Script init {{{1
+if exists('loaded_hexHighlight')
     finish
 endif
+
+if v:version < 700
+    echoerr "hexHighlight requires vim >= 7. Download it!"
+    finish
+endif
+let loaded_hexHighlight = 1
+
 let s:HexColored = 0
 let s:HexColors = {}
 
@@ -177,6 +190,7 @@ function! s:HexColorize()
                 let hexColor = '#' . substitute(strpart(hexColor, 1), '.', '&&', 'g')
             endif
 
+            if 
             let rPart = str2nr(strpart(hexColor, 1, 2), 16)
             let gPart = str2nr(strpart(hexColor, 3, 2), 16)
             let bPart = str2nr(strpart(hexColor, 5, 2), 16)
@@ -188,7 +202,8 @@ function! s:HexColorize()
             end
 
             exe 'hi hexColor'.hexGroup.' guifg='.hexComplement.' guibg='.hexColor
-            exe 'let m = matchadd("hexColor'.hexGroup.'", "'.hexColor.'", 25, '.hexGroup.')'
+            let m = matchadd("hexColor'.hexGroup.'", "'.hexColor.'", 25, '.hexGroup.')'
+                let m = matchadd(matchno, hiNameMatch)
             let s:HexColors += ['hexColor'.hexGroup]
             let hexGroup += 1
             let hexLineMatch += 1
