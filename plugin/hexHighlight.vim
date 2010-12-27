@@ -56,21 +56,31 @@ function! s:PopulateColorsDict()
     let lineNumber = 0
     while lineNumber <= line("$")
         let currentLine = getline(lineNumber)
+
         let hexLineMatch = 1
+        while match(currentLine, '#\x\{6}', 0, hexLineMatch) != -1
+            let hexColor = matchstr(currentLine, '#\x\{6}', 0, hexLineMatch)
 
-        while match(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch) != -1
-            let hexColor = matchstr(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch)
-
-            if (strlen(hexColor) == 4)
-                let hexColor = '#' . substitute(strpart(hexColor, 1), '.', '&&', 'g')
-            endif
-                echo hexColor
-
-            let hexNum = strpart(hexColor, 1, 6)
-
+            let hexNum = strpart(hexColor, 1)
             if !has_key(s:ColorsDict, hexNum)
                 let hexComplement = '#' . s:CalcVisibleForeground(hexNum)
                 let s:ColorsDict[hexNum] = {'hexColor': hexColor, 'hexComplement': hexComplement}
+            endif
+
+            let hexLineMatch += 1
+        endwhile
+
+        let hexLineMatch = 1
+        while match(currentLine, '#\x\{3}', 0, hexLineMatch) != -1
+            let shortHexColor = matchstr(currentLine, '#\x\{3}', 0, hexLineMatch)
+            let shortHexNum = strpart(shortHexColor, 1)
+
+            let hexNum = substitute(shortHexNum, '.', '&&', 'g')
+            let hexColor = '#' . hexNum
+            if !has_key(s:ColorsDict, shortHexNum)
+                let hexComplement = '#' . s:CalcVisibleForeground(hexNum)
+                echo shortHexNum
+                let s:ColorsDict[shortHexNum] = {'hexColor': hexColor, 'hexComplement': hexComplement}
             endif
 
             let hexLineMatch += 1
@@ -85,6 +95,8 @@ function! s:HighlightDict()
     for hexNum in keys(s:ColorsDict)
         let hexColor = s:ColorsDict[hexNum]['hexColor']
         let hexComplement = s:ColorsDict[hexNum]['hexComplement']
+        "echo hexNum
+        "echo hexColor
 
         if g:HexVisibleText
             exec 'hi ' . hexNum . ' guibg=' . hexColor . ' guifg=' . hexComplement
