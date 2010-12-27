@@ -7,7 +7,7 @@ if exists('g:loaded_hexHighlight') || v:version < 700
     finish
 endif
 let s:HexColored = 0
-let s:HexColors = []
+let s:HexColors = {}
 
 nnoremap <Plug>HexHighlightToggle :<C-u>call <SID>HexHighlightToggle()<CR>
 if ! hasmapto('<Plug>HexHighlightToggle', 'n')
@@ -165,7 +165,6 @@ function! s:HexClear()
 endfunction
 
 function! s:HexColorize()
-    let hexGroup = 4
     let lineNumber = 0
     while lineNumber <= line("$")
         let currentLine = getline(lineNumber)
