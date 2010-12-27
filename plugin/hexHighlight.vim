@@ -171,11 +171,10 @@ function! s:HexColorize()
         let hexLineMatch = 1
 
         while match(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch) != -1
-            let hexMatch = matchstr(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch)
+            let hexColor = matchstr(currentLine, '#\x\{6}\|#\x\{3}', 0, hexLineMatch)
 
-            let hexColor=hexMatch
-            if (strlen(hexMatch) == 4)
-                let hexColor = '#' . substitute(strpart(hexMatch, 1), '.', '&&', 'g')
+            if (strlen(hexColor) == 4)
+                let hexColor = '#' . substitute(strpart(hexColor, 1), '.', '&&', 'g')
             endif
 
             let rPart = str2nr(strpart(hexColor, 1, 2), 16)
