@@ -14,23 +14,12 @@ if ! hasmapto('<Plug>HexHighlightToggle', 'n')
     nmap <Leader><F2> <Plug>HexHighlightToggle
 endif
 
-nnoremap <Plug>HexHighlightRefresh :<C-u>call <SID>HexHighlightRefresh()<CR>
-if ! hasmapto('<Plug>HexHighlightRefresh', 'n')
-    nmap <Leader>[ <Plug>HexHighlightRefresh
-endif
-
-nnoremap <Plug>RefreshColorScheme :<C-u>call <SID>RefreshColorScheme()<CR>
-if ! hasmapto('<Plug>RefreshColorScheme', 'n')
-    nmap <Leader>p <Plug>RefreshColorScheme
-endif
-
 function! s:RefreshColorScheme()
     exe 'w'
     exe 'colorscheme ' . g:colors_name
 endfunction
+
 command! -nargs=? HCT         call s:HighlightCTerms()
-command! -nargs=? HHC         call s:HighlightHexCodes()
-command! -nargs=? RCS         call s:RefreshColorScheme()
 
 function! s:HighlightHexCodes()
     let lineNumber = 0
