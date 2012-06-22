@@ -221,7 +221,7 @@ endfunction
 function! s:ConvertColor(code, type, variant)
     if a:type == 'hex' && a:variant == 'cterm'
         return s:HexToCterm(a:code)
-    else if a:type == 'cterm' && a:variant == 'hex'
+    elseif a:type == 'cterm' && a:variant == 'hex'
         return s:CtermToHex(a:code)
     else
         return a:code
