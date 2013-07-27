@@ -18,6 +18,11 @@ if v:version < 700
 endif
 
 
+" Section: AutoCmds {{{1
+autocmd CursorMoved  <buffer> silent call s:HexHighlightInline()
+autocmd CursorMovedI <buffer> silent call s:HexHighlightInline()
+
+
 " Section: Mappings {{{1
 " Subsection: Plugins {{{2
 noremap <Plug>ToggleHexHighlight    :<C-u>call <SID>ToggleHexHighlight()<CR>
@@ -79,6 +84,77 @@ function! s:ToggleSchemeHighlight()
     let s:State = xor(s:State, 2)
 endfunction
 
+" Subsection: HexHighlightLine Workhorse {{{2
+function! s:HexHighlightLine(line, variant, gui)
+    let l:line = a:line
+    let l:variant = a:variant
+    let l:gui = a:gui
+
+    "speed is desirable 
+    if strlen(l:line) < 4
+        return
+    endif
+
+    let l:start = match(l:line, '#\v(\x{6}|\x{3})')
+    while l:start != -1
+        " cut the leading sharp-sign ('#')
+        let l:match = matchstr(l:line, '\v(\x{6}|\x{3})', l:start + 1)
+        let l:hexcode = l:match
+
+        " convert 3-digit-codes #f81 to 6-digit-codes #ff8811
+        if (strlen(l:hexcode) == 3)
+            let l:hexcode = substitute(l:hexcode, '.', '&&', 'g')
+        endif
+
+        " Get FG/BG Colors
+        let l:bg = s:CacheColor(l:hexcode, 'hex', l:variant)[l:variant]
+        let l:fg = l:bg
+
+        " make foreground visible if s:Flags & 1
+        if and(s:Flags, 1)
+            if and(str2nr(l:hexcode, 16), 0x808080)
+                let l:fg = '000000'
+            else
+                let l:fg = 'FFFFFF'
+            end
+            let l:fg = s:CacheColor(l:fg, 'hex', l:variant)[l:variant]
+        endif
+        let l:bgcolor = s:CacheColor(l:hexcode, 'hex', l:variant)
+
+        " highlight the hex code
+        let l:group = s:ColorGroup(l:match, 'hex')
+        if l:gui
+            exe 'highlight '.l:group['name'].' guifg=#'.l:fg.' guibg=#'.l:bg
+        else
+            exe 'highlight '.l:group['name'].' ctermfg='.l:fg.' ctermbg='.l:bg
+        endif
+        let l:matchid = matchadd(l:group['name'], l:match)
+        let l:group.matchid += [ l:matchid ]
+
+        " find next match on current line
+        let l:start = match(l:line, '#\v(\x{6}|\x{3})', l:start + 1)
+    endwhile
+endfunction
+"}}2
+
+" Subsection: HexHighlightInline Workhorse {{{2
+function! s:HexHighlightInline()
+    if s:State == 0
+        return
+    end
+
+    " Check if this is a gui / terminal process
+    let l:gui = has('gui_running')
+    if l:gui
+        let l:variant = 'hex'
+    else
+        let l:variant = 'cterm'
+    endif
+
+    let l:line = getline('.')
+    call s:HexHighlightLine(l:line, l:variant, l:gui)
+endfunction
+
 " Subsection: HexHighlight Workhorse {{{2
 function! s:HexHighlight()
     " Check if this is a gui / terminal process
@@ -92,46 +168,7 @@ function! s:HexHighlight()
     " Parse current file
     for l:lineNo in range(1, line('$'))
         let l:line = getline(l:lineNo)
-
-        let l:start = match(l:line, '#\v(\x{6}|\x{3})')
-        while l:start != -1
-            " cut the leading sharp-sign ('#')
-            let l:match = matchstr(l:line, '\v(\x{6}|\x{3})', l:start + 1)
-            let l:hexcode = l:match
-
-            " convert 3-digit-codes #f81 to 6-digit-codes #ff8811
-            if (strlen(l:hexcode) == 3)
-                let l:hexcode = substitute(l:hexcode, '.', '&&', 'g')
-            endif
-
-            " Get FG/BG Colors
-            let l:bg = s:CacheColor(l:hexcode, 'hex', l:variant)[l:variant]
-            let l:fg = l:bg
-
-            " make foreground visible if s:Flags & 1
-            if and(s:Flags, 1)
-                if and(str2nr(l:hexcode, 16), 0x808080)
-                    let l:fg = '000000'
-                else
-                    let l:fg = 'FFFFFF'
-                end
-                let l:fg = s:CacheColor(l:fg, 'hex', l:variant)[l:variant]
-            endif
-            let l:bgcolor = s:CacheColor(l:hexcode, 'hex', l:variant)
-
-            " highlight the hex code
-            let l:group = s:ColorGroup(l:match, 'hex')
-            if l:gui
-                exe 'highlight '.l:group['name'].' guifg=#'.l:fg.' guibg=#'.l:bg
-            else
-                exe 'highlight '.l:group['name'].' ctermfg='.l:fg.' ctermbg='.l:bg
-            endif
-            let l:matchid = matchadd(l:group['name'], l:match)
-            let l:group.matchid += [ l:matchid ]
-
-            " find next match on current line
-            let l:start = match(l:line, '#\v(\x{6}|\x{3})', l:start + 1)
-        endwhile
+        call s:HexHighlightLine(l:line, l:variant, l:gui)
     endfor
 endfunction
 
