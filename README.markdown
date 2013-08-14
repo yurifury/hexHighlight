@@ -34,4 +34,9 @@ in your `.vimrc`.
 
 ## Interface
 
-The default keymappings are `<F2>` for `ToggleHexHighlight` and `<Leader><F2>` for `ToggleSchemeHighlight`.
+There is no keybinding exposed by default. I suggest to add keybindings in
+your `.vimrc`:
+
+    nmap <F2>           <Plug>ToggleHexHighlight
+    nmap <leader><F2>   <Plug>ToggleSchemeHighlight
+

@@ -19,16 +19,9 @@ endif
 autocmd CursorMoved  <buffer> silent call s:HexHighlightInline()
 autocmd CursorMovedI <buffer> silent call s:HexHighlightInline()
 
-
 " Section: Mappings {{{1
-" Subsection: Plugins {{{2
 noremap <Plug>ToggleHexHighlight    :<C-u>call <SID>ToggleHexHighlight()<CR>
 noremap <Plug>ToggleSchemeHighlight :<C-u>call <SID>ToggleSchemeHighlight()<CR>
-
-" Subsection: KeyMappings {{{2
-nmap <F2>           <Plug>ToggleHexHighlight
-nmap <leader><F2>   <Plug>ToggleSchemeHighlight
-" 2}}}
 
 " Section: Initialize static variables {{{1
 function! s:Init(Rgb2Cterm, Cterm2Rgb)
