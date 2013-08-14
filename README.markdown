@@ -21,7 +21,7 @@ In the non-gui case, a 256 color terminal is required and the hexcode is approxi
 You can install this plugin using [vim-pathogen](https://github.com/tpope/vim-pathogen/):
 
     cd ~/.vim/bundle
-    git clone git://github.com/thomas-glaessle/hexHighlight.git
+    git clone <URL>
 
 Alternatively, you can simply extract everything into your `.vim` directory.
 

@@ -1,13 +1,10 @@
 " ============================================================================
 " File:        hexhighlight.vim
 " Description: VIM plugin that provides highlighting for colorcodes
-" Maintainer:  Thomas Gläßle
-" URL:         https://github.com/thomas-glaessle/hexHighlight
-" Original:    Yuri Feldman <yuri@tbqh.net>
-"              https://github.com/yurifury  and
+" Author:      Yuri Feldman <yuri@tbqh.net>
+" URL:         https://github.com/yurifury
 "              https://github.com/vesan/hexHighlight
-" Version:     2.1
-" Last Change: 18. January, 2012
+"              https://github.com/coldfix/hexHighlight
 " License:     WTFPL - Do What The Fuck You Want To Public License.
 "
 " ============================================================================
