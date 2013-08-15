@@ -20,16 +20,20 @@ In the non-gui case, a 256 color terminal is required and the hexcode is approxi
 
 You can install this plugin using [vim-pathogen](https://github.com/tpope/vim-pathogen/):
 
-    cd ~/.vim/bundle
-    git clone <URL>
+```bash
+cd ~/.vim/bundle
+git clone <URL>
+```
 
-Alternatively, you can simply extract everything into your `.vim` directory.
+Alternatively, you can simply extract everything into your `~/.vim` directory.
 
 If your vim does not correctly detect that it is indeed running from a 256 color terminal, you can force vim to work honor this by setting
 
-    set t_Co=256
+```vim
+set t_Co=256
+```
 
-in your `.vimrc`.
+in your `~/.vimrc`.
 
 
 ## Interface
@@ -37,6 +41,8 @@ in your `.vimrc`.
 There is no keybinding exposed by default. I suggest to add keybindings in
 your `.vimrc`:
 
-    nmap <F2>           <Plug>ToggleHexHighlight
-    nmap <leader><F2>   <Plug>ToggleSchemeHighlight
+```vim
+nmap <F2>           <Plug>ToggleHexHighlight
+nmap <leader><F2>   <Plug>ToggleSchemeHighlight
+```
 
